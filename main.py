@@ -34,7 +34,8 @@ while cap.isOpened():
         for detection in car_detections.boxes.data.tolist():
             x1, y1, x2, y2, score, class_id = detection
             if int(class_id) in vehicle_classes and score > 0.5:
-                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                # we have remove the red rectangle from the car
+                # cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
                 # Detect license plates within the vehicle bounding box
                 lp_detections = license_plate_detector(frame)[0]
@@ -50,7 +51,8 @@ while cap.isOpened():
         if highest_confidence_plate is not None:
             x1, y1, x2, y2, score = highest_confidence_plate
             paused = True  # Pause on detection
-            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
+            # we have have changed the color of the license plate to red based on professor request we also increase the thickness of the border to make it more visble
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 5)
 
             # Crop the detected license plate
             license_plate_crop = frame[int(y1):int(y2), int(x1):int(x2)]
@@ -89,8 +91,11 @@ while cap.isOpened():
                 print(text)
                 if prob > 0.2:  # Check confidence of OCR
                     print(f'Detected License Plate Text: {text.strip()}')  # Print the detected text
-                    cv2.putText(frame, text.strip(), (int(x1), int(y1) - 10), 
+                    # the colors of number plate text can be changed here by the changing the R G B values. 0, 255, 0
+                    # to change the color of the number text which show above the number plate to red we need to change 0,255,0 to 0,0,255
+                    cv2.putText(frame, text.strip(), (int(x1), int(y1) - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
 
     # Show the camera view
     cv2.imshow('Camera View', frame)
